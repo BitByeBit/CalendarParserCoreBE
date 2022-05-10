@@ -19,6 +19,9 @@ public class UploaderService {
     private ParserService parserService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private CalendarService calendarService;
 
     public CalendarDto uploadCalendar(User user, MultipartFile file) throws IOException {
@@ -32,7 +35,8 @@ public class UploaderService {
 
         CalendarDto calendarDto = parserService.execParser(parserDataDto);
 
-        calendarService.createCalendar(calendarDto);
+        user.setCalendar(calendarService.createCalendar(calendarDto));
+        userService.save(user);
 
         return calendarDto;
     }

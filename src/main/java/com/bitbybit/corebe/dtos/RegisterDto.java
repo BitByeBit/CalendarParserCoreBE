@@ -8,6 +8,6 @@ public class RegisterDto {
     public String group;
     public String semiGroup;
     public String series;
-    public String year;
+    public Integer year;
     public Integer semester;
 }
