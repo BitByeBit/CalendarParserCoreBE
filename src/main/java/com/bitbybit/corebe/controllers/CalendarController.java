@@ -15,7 +15,14 @@ public class CalendarController {
     private CalendarService calendarService;
 
     @GetMapping("/getCalendar")
-    public Calendar getCalendar() {
-        return calendarService.getCalendar("username");
+    public CalendarDto getCalendar() {
+        Calendar calendar = calendarService.getCalendar("username");
+        CalendarDto calendarDto = new CalendarDto();
+        calendarDto.events = calendar.getEvents();
+        calendarDto.year = calendar.getYear();
+        calendarDto.series = calendar.getSerie();
+        calendarDto.semester = calendar.getSemester();
+
+        return calendarDto;
     }
 }

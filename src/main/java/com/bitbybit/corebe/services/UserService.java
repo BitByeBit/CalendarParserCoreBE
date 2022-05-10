@@ -13,6 +13,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public void save(User user) {
+        this.userRepository.save(user);
+    }
+
     public String register(RegisterDto registerForm) {
         User user = new User(registerForm.username, registerForm.password, registerForm.name,
                             registerForm.series, registerForm.group, registerForm.semiGroup, null);
