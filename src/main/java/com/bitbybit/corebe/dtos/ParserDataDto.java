@@ -1,21 +1,9 @@
 package com.bitbybit.corebe.dtos;
 
+import com.bitbybit.corebe.models.User;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ParserDataDto {
-    private UserDataDto user;
-    private MultipartFile file;
-
-    public ParserDataDto(UserDataDto user, MultipartFile file) {
-        this.user = user;
-        this.file = file;
-    }
-
-    public UserDataDto getUser() {
-        return user;
-    }
-
-    public MultipartFile getFile() {
-        return file;
-    }
+    public User user;
+    public MultipartFile file;
 }

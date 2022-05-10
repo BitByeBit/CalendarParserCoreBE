@@ -18,23 +18,23 @@ public class Calendar {
     private Long calendarid;
 
     @Column(name = "year")
-    private Integer year;
+    private String year;
 
     @Column(name = "serie")
     private String serie;
 
     @Column(name = "semester")
-    private Integer semester;
+    private String semester;
 
     @OneToMany
     @JoinColumn(name = "events")
     private List<Event> events;
 
     @OneToOne
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "users")
     private User user;
 
-    public Calendar(Integer year, String serie, Integer semester,
+    public Calendar(String year, String serie, String semester,
                     List<Event> events, User user) {
         this.year = year;
         this.serie = serie;
