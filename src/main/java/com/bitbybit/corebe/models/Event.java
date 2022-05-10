@@ -2,12 +2,6 @@ package com.bitbybit.corebe.models;
 
 import javax.persistence.*;
 
-enum EventType {
-    CURS,
-    LAB,
-    SEMINAR
-}
-
 @Entity
 @Table(name = "events")
 @SequenceGenerator(name = "eventGenerator", sequenceName = "eventSequence")
@@ -35,6 +29,17 @@ public class Event {
     @Column(name = "extra")
     private String extra;
 
+    public Event(String name, EventType type,
+                 String timeslot, String weekday, Integer parity) {
+        this.name = name;
+
+        this.type = type;
+
+        this.timeslot = timeslot;
+        this.weekday = weekday;
+        this.parity = parity;
+    }
+
     public Long getEventid() {
         return eventid;
     }
@@ -61,5 +66,9 @@ public class Event {
 
     public String getExtra() {
         return extra;
+    }
+
+    public void setParity(Integer parity) {
+        this.parity = parity;
     }
 }

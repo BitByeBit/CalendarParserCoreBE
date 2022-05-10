@@ -1,10 +1,10 @@
-package com.bitbybit.corebe.DTOS;
+package com.bitbybit.corebe.dtos;
 
-public class LoginForm {
+public class LoginDto {
     private String username;
     private String password;
 
-    public LoginForm(String username, String password) {
+    public LoginDto(String username, String password) {
         this.username = username;
         this.password = password;
     }
