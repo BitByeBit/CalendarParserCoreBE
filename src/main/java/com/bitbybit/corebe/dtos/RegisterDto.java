@@ -1,6 +1,6 @@
-package com.bitbybit.corebe.DTOS;
+package com.bitbybit.corebe.dtos;
 
-public class RegisterForm {
+public class RegisterDto {
     private String username;
     private String password;
     private String matchingPassword;
@@ -10,8 +10,8 @@ public class RegisterForm {
     private int year;
     private int semester;
 
-    public RegisterForm(String username, String  password, String matchingPassword, String group, String semiGroup, String series,
-                        int year, int semester) {
+    public RegisterDto(String username, String  password, String matchingPassword, String group, String semiGroup, String series,
+                       int year, int semester) {
         this.username = username;
         this.password = password;
         this.matchingPassword = matchingPassword;
