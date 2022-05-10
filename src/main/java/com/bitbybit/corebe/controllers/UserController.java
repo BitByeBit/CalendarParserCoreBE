@@ -3,8 +3,10 @@ package com.bitbybit.corebe.controllers;
 import com.bitbybit.corebe.dtos.LoginDto;
 import com.bitbybit.corebe.dtos.ParserDataDto;
 import com.bitbybit.corebe.dtos.RegisterDto;
+import com.bitbybit.corebe.dtos.UserDataDto;
 import com.bitbybit.corebe.models.Event;
-import com.bitbybit.corebe.services.AuthenticatorService;
+import com.bitbybit.corebe.models.User;
+import com.bitbybit.corebe.services.UserService;
 import com.bitbybit.corebe.services.ParserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +19,9 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
-public class AuthenticationController {
-    public AuthenticatorService auth = new AuthenticatorService();
+public class UserController {
+    @Autowired
+    private UserService userService;
 //    public ParserDataDto parserData;
 
     @Autowired
@@ -26,23 +29,14 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public String registerUser(@RequestBody RegisterDto registerForm) {
-        return auth.register(registerForm);
+        return userService.register(registerForm);
     }
 
     @PostMapping("/login")
     public String loginUser(@RequestBody LoginDto loginForm) {
-        auth.login(loginForm);
+        userService.login(loginForm);
         return null;
     }
 
-    @PostMapping("/upload")
-    public List<Event> upload(@RequestBody MultipartFile file) throws IOException {
-        ParserDataDto parserData = new ParserDataDto(auth.userData, file);
 
-        if (file == null) {
-            return Collections.emptyList();
-        }
-
-        return parserService.execParser(parserData);
-    }
 }

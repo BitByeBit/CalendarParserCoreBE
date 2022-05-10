@@ -1,6 +1,8 @@
 package com.bitbybit.corebe.services;
 
+import com.bitbybit.corebe.dtos.CalendarDto;
 import com.bitbybit.corebe.dtos.ParserDataDto;
+import com.bitbybit.corebe.repositories.EventRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -21,6 +23,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import static com.bitbybit.corebe.utils.Const.*;
 import com.bitbybit.corebe.models.Event;
 import com.bitbybit.corebe.models.EventType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +31,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class ParserService {
     // list of the merged cells in the sheet
     private static List<CellRangeAddress> mergedRegions;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     private void retrieveGroups(Map<Integer, List<Cell>> data,
                                        List<String> groups) {
@@ -329,7 +335,7 @@ public class ParserService {
         }
     }
 
-    public List<Event> execParser(ParserDataDto parserData) throws IOException {
+    public CalendarDto execParser(ParserDataDto parserData) throws IOException {
         /*
          * args[ ]
          *     [0] - orar
@@ -337,8 +343,8 @@ public class ParserService {
          *     [2] - grupa -- nr
          *     [3] - semigrupa -- A/B
          */
-        var userData = parserData.getUser();
-        MultipartFile multipartFile = parserData.getFile();
+        var userData = parserData.user;
+        MultipartFile multipartFile = parserData.file;
 
         InputStream file = multipartFile.getInputStream();
 
@@ -410,9 +416,9 @@ public class ParserService {
 
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
-        String seria = userData.getSeries();
-        String grupa = userData.getGroup();
-        String sgr = userData.getSemiGroup();
+        String seria = userData.getSerie();
+        String grupa = userData.getGrupa();
+        String sgr = userData.getSemigrupa();
 
         String group = grupa + " " + seria;
         String sgrEntry = group + " " + sgr;
@@ -430,6 +436,7 @@ public class ParserService {
             for (var time : hours0.keySet()) {
                 Event e = hours0.get(time);
                 events.add(e);
+                this.eventRepository.save(e);
             }
 
             var hours1 = dSchedule.get(1);
@@ -438,11 +445,18 @@ public class ParserService {
                 Event e = hours1.get(time);
                 if (e.getParity() != 2) {
                     events.add(e);
+                    this.eventRepository.save(e);
                 }
             }
         }
 
-        return events;
+        CalendarDto calendarDto = new CalendarDto();
+        calendarDto.events = events;
+        calendarDto.semester = semester;
+        calendarDto.year = year;
+        calendarDto.series = series;
+
+        return calendarDto;
 
 //        mapper.writeValue(new File("eventList.json"), events);
     }
