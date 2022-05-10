@@ -30,7 +30,7 @@ public class Event {
     private String weekday;
 
     @Column(name = "parity")
-    private Boolean parity;
+    private Integer parity;
 
     @Column(name = "extra")
     private String extra;
@@ -55,7 +55,7 @@ public class Event {
         return weekday;
     }
 
-    public Boolean getParity() {
+    public Integer getParity() {
         return parity;
     }
 
