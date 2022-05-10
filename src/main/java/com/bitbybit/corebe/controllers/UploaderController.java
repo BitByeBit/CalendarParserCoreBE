@@ -1,5 +1,6 @@
 package com.bitbybit.corebe.controllers;
 
+import com.bitbybit.corebe.dtos.CalendarDto;
 import com.bitbybit.corebe.dtos.ParserDataDto;
 import com.bitbybit.corebe.models.Calendar;
 import com.bitbybit.corebe.models.Event;
@@ -26,9 +27,8 @@ public class UploaderController {
     private UploaderService uploaderService;
 
     @PostMapping("/upload")
-    public Calendar upload(@RequestBody MultipartFile file) throws IOException {
+    public CalendarDto upload(@RequestBody MultipartFile file) throws IOException {
         User user = userService.getUser("username");
-
         return uploaderService.uploadCalendar(user, file);
     }
 }

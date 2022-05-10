@@ -5,9 +5,11 @@ import com.bitbybit.corebe.models.Calendar;
 import com.bitbybit.corebe.models.Event;
 import com.bitbybit.corebe.repositories.CalendarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class CalendarService {
     @Autowired
     private CalendarRepository calendarRepository;
@@ -20,11 +22,14 @@ public class CalendarService {
     // get calendar
     // edit calendar
 
-    public Calendar createCalendar(CalendarDto calendarDto) {
+    public void createCalendar(CalendarDto calendarDto) {
         Calendar calendar = new Calendar(calendarDto.year, calendarDto.series, calendarDto.semester,
                                         calendarDto.events, userService.getUser("username"));
 
         calendarRepository.save(calendar);
-        return calendar;
+    }
+
+    public Calendar getCalendar(String username) {
+        return calendarRepository.getCalendarByUser(username);
     }
 }
