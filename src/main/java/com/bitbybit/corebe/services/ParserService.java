@@ -13,10 +13,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.poi.ss.util.CellRangeAddress;
 
@@ -416,11 +413,11 @@ public class ParserService {
 
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
-        String seria = userData.getSerie();
+        String series = userData.getSerie();
         String grupa = userData.getGrupa();
         String sgr = userData.getSemigrupa();
 
-        String group = grupa + " " + seria;
+        String group = grupa + " " + series;
         String sgrEntry = group + " " + sgr;
 
         var schedule = activities.get(sgrEntry);
@@ -447,6 +444,25 @@ public class ParserService {
                     events.add(e);
                     this.eventRepository.save(e);
                 }
+            }
+        }
+
+        String aux = data.get(YEAR_ROW).get(0).getStringCellValue();
+        String[] yearRow = aux.split("\\W+");
+
+        String year = yearRow[3];
+
+        aux = data.get(SEM_ROW).get(0).getStringCellValue();
+        String[] semesterRow = aux.split("\\W+");
+
+        System.out.println(Arrays.toString(semesterRow));
+        String semester = null;
+
+        List<String> semRow = Arrays.asList(semesterRow);
+        for (i = 0; i < semRow.size(); ++i) {
+            if (Objects.equals(semRow.get(i), SEM_TEXT)) {
+                semester = semesterRow[i + 1];
+                break;
             }
         }
 

@@ -10,6 +10,11 @@ import java.util.Map;
 public final class Const {
     private Const() {}
 
+    public static final int YEAR_ROW = 4;
+    public static final int SEM_ROW = 5;
+
+    public static final String SEM_TEXT = "Semestrul";
+
     // max number of columns to be considered on each row
     public static final int MAX_COLS = 40;
 
