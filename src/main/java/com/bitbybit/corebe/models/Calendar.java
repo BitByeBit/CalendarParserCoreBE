@@ -1,11 +1,16 @@
 package com.bitbybit.corebe.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "calendars")
 @SequenceGenerator(name = "calendarGenerator", sequenceName = "calendarSequence")
+@Getter
+@Setter
 public class Calendar {
     @Id
     @Column(name = "calendarid")
@@ -25,23 +30,18 @@ public class Calendar {
     @JoinColumn(name = "events")
     private List<Event> events;
 
-    public Long getCalendarid() {
-        return calendarid;
+    @OneToOne
+    @JoinColumn(name = "user")
+    private User user;
+
+    public Calendar(Integer year, String serie, Integer semester,
+                    List<Event> events, User user) {
+        this.year = year;
+        this.serie = serie;
+        this.semester = semester;
+        this.events = events;
+        this.user = user;
     }
 
-    public Integer getYear() {
-        return year;
-    }
-
-    public String getSerie() {
-        return serie;
-    }
-
-    public Integer getSemester() {
-        return semester;
-    }
-
-    public List<Event> getEvents() {
-        return events;
-    }
+    public Calendar() {}
 }
