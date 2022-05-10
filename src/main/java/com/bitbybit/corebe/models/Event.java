@@ -1,10 +1,15 @@
 package com.bitbybit.corebe.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "events")
 @SequenceGenerator(name = "eventGenerator", sequenceName = "eventSequence")
+@Getter
+@Setter
 public class Event {
     @Id
     @Column(name = "eventid")
@@ -27,48 +32,20 @@ public class Event {
     private Integer parity;
 
     @Column(name = "extra")
-    private String extra;
+    private String extra = "";
 
-    public Event(String name, EventType type,
-                 String timeslot, String weekday, Integer parity) {
+    @ManyToOne
+    @JoinColumn(name = "calendar")
+    private Calendar calendar;
+
+    public Event(String name, EventType type, String timeslot,
+                 String weekday, Integer parity) {
         this.name = name;
-
         this.type = type;
-
         this.timeslot = timeslot;
         this.weekday = weekday;
         this.parity = parity;
     }
 
-    public Long getEventid() {
-        return eventid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public EventType getType() {
-        return type;
-    }
-
-    public String getTimeslot() {
-        return timeslot;
-    }
-
-    public String getWeekday() {
-        return weekday;
-    }
-
-    public Integer getParity() {
-        return parity;
-    }
-
-    public String getExtra() {
-        return extra;
-    }
-
-    public void setParity(Integer parity) {
-        this.parity = parity;
-    }
+    public Event() {}
 }

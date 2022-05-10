@@ -1,10 +1,15 @@
 package com.bitbybit.corebe.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
 @SequenceGenerator(name = "userGenerator", sequenceName = "userSequence")
+@Getter
+@Setter
 public class User {
     @Id
     @GeneratedValue(generator = "userGenerator")
@@ -33,35 +38,17 @@ public class User {
     @JoinColumn(name = "calendar")
     private Calendar calendar;
 
-    public Long getUserid() {
-        return userid;
+    public User(String username, String password, String name,
+                String serie, String grupa, String semigrupa,
+                Calendar calendar) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.semigrupa = semigrupa;
+        this.serie = serie;
+        this.grupa = grupa;
+        this.calendar = calendar;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getSerie() {
-        return serie;
-    }
-
-    public String getGrupa() {
-        return grupa;
-    }
-
-    public String getSemigrupa() {
-        return semigrupa;
-    }
-
-    public Calendar getCalendar() {
-        return calendar;
-    }
+    public User() {}
 }
