@@ -41,4 +41,9 @@ public class CalendarController {
     public String editEvent(@RequestBody EventDto eventDto) {
         return this.eventService.editEvent(eventDto);
     }
+
+    @PostMapping("/deleteEvent")
+    public String deleteEvent(@RequestBody EventDto eventDto) {
+        return this.eventService.deleteEvent(eventDto);
+    }
 }
