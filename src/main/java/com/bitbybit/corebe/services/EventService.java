@@ -1,8 +1,10 @@
 package com.bitbybit.corebe.services;
 
 import com.bitbybit.corebe.dtos.EventDto;
+import com.bitbybit.corebe.models.Calendar;
 import com.bitbybit.corebe.models.Event;
 import com.bitbybit.corebe.repositories.EventRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,51 +15,36 @@ public class EventService {
     @Autowired
     private EventRepository eventRepository;
 
-    public void save(Event event) {
-        this.eventRepository.save(event);
+    @Autowired
+    private CalendarService calendarService;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public Event save(Event event) {
+        return this.eventRepository.save(event);
     }
 
-    public String addEvent(EventDto eventDto) {
+    public Event addEvent(EventDto eventDto) {
         Event event = new Event(eventDto.name, eventDto.type, eventDto.timeslot, eventDto.weekday,
                 eventDto.parity);
-        event.setCalendar(eventDto.calendar);
         event.setExtra(Objects.requireNonNullElse(eventDto.extra, ""));
-        this.save(event);
-        return "Event added";
+        event = this.save(event);
+        Calendar calendar = this.calendarService.getCalendar("username");
+        calendar.addEvent(event);
+        calendarService.saveCalendar(calendar);
+        return event;
     }
 
-    public String editEvent(EventDto eventDto) {
-        Event event = this.eventRepository.getById(eventDto.id);
-        if (eventDto.name != null) {
-            event.setName(eventDto.name);
-        }
-        if (eventDto.type != null) {
-            event.setType(eventDto.type);
-        }
-        if (eventDto.timeslot != null) {
-            event.setTimeslot(eventDto.timeslot);
-        }
-        if (eventDto.weekday != null) {
-            event.setWeekday(eventDto.weekday);
-        }
-        if (eventDto.parity != null) {
-            event.setParity(eventDto.parity);
-        }
-        if (eventDto.extra != null) {
-            event.setExtra(eventDto.extra);
-        }
-        this.eventRepository.save(event);
-
-
-        return "Event edited";
+    public Event editEvent(EventDto eventDto) {
+        Event event = this.eventRepository.getById(eventDto.eventId);
+        modelMapper.map(eventDto, event);
+        return eventRepository.save(event);
     }
 
-    public String deleteEvent(EventDto eventDto) {
-        Event event = this.eventRepository.getById(eventDto.id);
-
+    public void deleteEvent(Long eventId) {
+        Event event = this.eventRepository.getById(eventId);
         this.eventRepository.delete(event);
-
-        return "Event deleted";
     }
 
 }

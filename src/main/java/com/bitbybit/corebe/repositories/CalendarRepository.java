@@ -1,5 +1,6 @@
 package com.bitbybit.corebe.repositories;
 
+import com.bitbybit.corebe.dtos.CalendarDto;
 import com.bitbybit.corebe.models.Calendar;
 import com.bitbybit.corebe.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;

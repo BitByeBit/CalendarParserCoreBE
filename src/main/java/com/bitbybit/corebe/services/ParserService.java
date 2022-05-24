@@ -1,6 +1,7 @@
 package com.bitbybit.corebe.services;
 
 import com.bitbybit.corebe.dtos.CalendarDto;
+import com.bitbybit.corebe.dtos.EventDto;
 import com.bitbybit.corebe.dtos.ParserDataDto;
 import com.bitbybit.corebe.repositories.EventRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +21,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import static com.bitbybit.corebe.utils.Const.*;
 import com.bitbybit.corebe.models.Event;
 import com.bitbybit.corebe.models.EventType;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,8 +31,15 @@ public class ParserService {
     // list of the merged cells in the sheet
     private static List<CellRangeAddress> mergedRegions;
 
+    // tags that identify each course
+    // > e.g. - SO
+    private static Set<String> tags;
+
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     private void retrieveGroups(Map<Integer, List<Cell>> data,
                                        List<String> groups) {
@@ -71,8 +80,8 @@ public class ParserService {
         return false;
     }
 
-    private Event getCourse(Cell cell, int day, int t) {
-        Event c = new Event(cell.getStringCellValue(), EventType.CURS, HOURS.get(t),
+    private EventDto getCourse(Cell cell, int day, int t) {
+        EventDto c = new EventDto(cell.getStringCellValue(), EventType.CURS, HOURS.get(t),
                 DAYS.get(day), 2);
 
         // check alignment to determine the parity
@@ -89,6 +98,46 @@ public class ParserService {
         return c;
     }
 
+    private String getTag(String courseName) {
+        int i, curr, j;
+
+        for (i = 0; i < courseName.length(); ++i) {
+            if (courseName.charAt(i) == '(') {
+                boolean ok = false;
+
+                for (var s : COURSE) {
+                    curr = i;
+
+                    for (j = 0; j < s.length() && curr < courseName.length(); ++j, ++curr) {
+                        if (s.charAt(j) != courseName.charAt(curr)) {
+                            break;
+                        }
+                    }
+
+                    if (j == s.length()) {
+                        ok = true;
+                        break;
+                    }
+                }
+
+                if (!ok) {
+                    // tag found
+                    StringBuilder tag = new StringBuilder();
+
+                    ++i;
+                    for (; courseName.charAt(i) != ')'; ++i) {
+                        tag.append(courseName.charAt(i));
+                    }
+
+                    tags.add(tag.toString());
+                    return tag.toString();
+                }
+            }
+        }
+
+        return null;
+    }
+
     /**
      * retrieve courses by day, time
      *
@@ -97,7 +146,7 @@ public class ParserService {
      */
     private void retrieveCourses(int pos,
                                         Map<Integer, List<Cell>> data,
-                                        List<Event> courses) {
+                                        List<EventDto> courses) {
         int curr = pos;
 
         int numDays = DAYS.size();
@@ -113,7 +162,11 @@ public class ParserService {
                     if (cell.getCellType() == CellType.STRING &&
                             isCourse(cell.getStringCellValue())) {
 //                        Course c = getCourse(cell, i, t >>> 1);
-                        Event c = getCourse(cell, i, t >>> 1);
+                        EventDto c = getCourse(cell, i, t >>> 1);
+
+                        String tag = getTag(cell.getStringCellValue());
+                        c.setTag(tag);
+
                         courses.add(c);
                     }
                 }
@@ -122,7 +175,11 @@ public class ParserService {
                 for (Cell cell : row) {
                     if (cell.getCellType() == CellType.STRING &&
                             isCourse(cell.getStringCellValue())) {
-                        Event c = getCourse(cell, i, t >>> 1);
+                        EventDto c = getCourse(cell, i, t >>> 1);
+
+                        String tag = getTag(cell.getStringCellValue());
+                        c.setTag(tag);
+
                         courses.add(c);
                     }
                 }
@@ -130,14 +187,14 @@ public class ParserService {
         }
     }
 
-    private Event getLab(Cell cell, int day, int t, String group) {
-        Event l;
+    private EventDto getLab(Cell cell, int day, int t, String group) {
+        EventDto l;
 
         if (isSem(cell.getStringCellValue())) {
-            l = new Event(cell.getStringCellValue(), EventType.SEMINAR, HOURS.get(t),
+            l = new EventDto(cell.getStringCellValue(), EventType.SEMINAR, HOURS.get(t),
                     DAYS.get(day), 2);
         } else {
-            l = new Event(cell.getStringCellValue(), EventType.LAB, HOURS.get(t),
+            l = new EventDto(cell.getStringCellValue(), EventType.LAB, HOURS.get(t),
                     DAYS.get(day), 2);
         }
 
@@ -151,6 +208,14 @@ public class ParserService {
         } else if (align == HorizontalAlignment.GENERAL ||
                 align == HorizontalAlignment.LEFT) {
             l.setParity(1);
+        }
+
+        String name = cell.getStringCellValue();
+        for (var tag : tags) {
+            if (name.contains(tag)) {
+                l.setTag(tag);
+                break;
+            }
         }
 
         return l;
@@ -209,11 +274,11 @@ public class ParserService {
                                   int day,
                                   int t, // time
                                   String g, // group
-                                  List<Map<Integer, Map<Integer, Event>>> activitiesA,
-                                  List<Map<Integer, Map<Integer, Event>>> activitiesB) {
+                                  List<Map<Integer, Map<Integer, EventDto>>> activitiesA,
+                                  List<Map<Integer, Map<Integer, EventDto>>> activitiesB) {
         if (cell.getCellType() == CellType.STRING &&
                 isLab(cell.getStringCellValue())) {
-            Event l = getLab(cell, day, t >>> 1, g);
+            EventDto l = getLab(cell, day, t >>> 1, g);
 
             int par = l.getParity();
             if (par == 1) {
@@ -244,7 +309,7 @@ public class ParserService {
                                      Map<Integer, List<Cell>> data,
                                      List<String> groups,
                                      Map<String, List<Map<Integer,
-                                             Map<Integer, Event>>>> activities) {
+                                             Map<Integer, EventDto>>>> activities) {
         int col = GOFF;
 
         int groupCt = 0;
@@ -294,19 +359,19 @@ public class ParserService {
      * @param groups - list of the groups in the table
      * @param activities - activities per group -> course/lab
      */
-    private void addCourses(List<Event> courses,
+    private void addCourses(List<EventDto> courses,
                                    List<String> groups,
                                    Map<String,
                                            List<Map<Integer,
-                                                   Map<Integer, Event>>>> activities) {
+                                                   Map<Integer, EventDto>>>> activities) {
         for (var g : groups) {
             for (var sgr = 'A'; sgr <= 'B'; ++sgr) {
                 List<Map<Integer,
-                        Map<Integer, Event>>> days = new ArrayList<>();
+                        Map<Integer, EventDto>>> days = new ArrayList<>();
 
                 int d;
                 for (d = 0; d < DAYS.size(); ++d) {
-                    Map<Integer, Map<Integer, Event>> par = new HashMap<>();
+                    Map<Integer, Map<Integer, EventDto>> par = new HashMap<>();
                     par.put(0, new HashMap<>());
                     par.put(1, new HashMap<>());
 
@@ -340,6 +405,7 @@ public class ParserService {
          *     [2] - grupa -- nr
          *     [3] - semigrupa -- A/B
          */
+        tags = new HashSet<>();
         var userData = parserData.user;
         MultipartFile multipartFile = parserData.file;
 
@@ -368,10 +434,10 @@ public class ParserService {
          */
         Map<Integer, List<Cell>> data = new HashMap<>();
         List<String> groups = new ArrayList<>();
-        List<Event> courses = new ArrayList<>();
+        List<EventDto> courses = new ArrayList<>();
         Map<String,
                 List<Map<Integer,
-                        Map<Integer, Event>>>> activities = new HashMap<>();
+                        Map<Integer, EventDto>>>> activities = new HashMap<>();
 
         int i = 0;
 
@@ -413,9 +479,9 @@ public class ParserService {
 
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
-        String series = userData.getSerie();
-        String grupa = userData.getGrupa();
-        String sgr = userData.getSemigrupa();
+        String series = userData.getSeries();
+        String grupa = userData.getGroup();
+        String sgr = userData.getSubGroup();
 
         String group = grupa + " " + series;
         String sgrEntry = group + " " + sgr;
@@ -424,25 +490,25 @@ public class ParserService {
 
         int d;
 
-        List<Event> events = new ArrayList<>();
+        List<EventDto> events = new ArrayList<>();
         for (d = 0; d < schedule.size(); ++d) {
             var dSchedule = schedule.get(d);
 
             var hours0 = dSchedule.get(0);
 
             for (var time : hours0.keySet()) {
-                Event e = hours0.get(time);
+                EventDto e = hours0.get(time);
                 events.add(e);
-                this.eventRepository.save(e);
+//                this.eventRepository.save(e);
             }
 
             var hours1 = dSchedule.get(1);
 
             for (var time : hours1.keySet()) {
-                Event e = hours1.get(time);
+                EventDto e = hours1.get(time);
                 if (e.getParity() != 2) {
                     events.add(e);
-                    this.eventRepository.save(e);
+//                    this.eventRepository.save(e);
                 }
             }
         }
@@ -467,6 +533,7 @@ public class ParserService {
         }
 
         CalendarDto calendarDto = new CalendarDto();
+
         calendarDto.events = events;
         calendarDto.semester = semester;
         calendarDto.year = year;

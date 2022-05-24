@@ -12,9 +12,9 @@ import javax.persistence.*;
 @Setter
 public class Event {
     @Id
-    @Column(name = "eventid")
+    @Column(name = "eventId")
     @GeneratedValue(generator = "eventGenerator")
-    private Long eventid;
+    private Long eventId;
 
     @Column(name = "name")
     private String name;
@@ -34,9 +34,8 @@ public class Event {
     @Column(name = "extra")
     private String extra = "";
 
-    @ManyToOne
-    @JoinColumn(name = "calendar")
-    private Calendar calendar;
+    @Column(name = "tag")
+    private String tag = "";
 
     public Event(String name, EventType type, String timeslot,
                  String weekday, Integer parity) {

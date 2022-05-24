@@ -19,7 +19,7 @@ public class UserService {
 
     public String register(RegisterDto registerForm) {
         User user = new User(registerForm.username, registerForm.password, registerForm.name,
-                            registerForm.series, registerForm.group, registerForm.semiGroup, null);
+                            registerForm.series, registerForm.group, registerForm.subGroup, null);
 
         if (!registerForm.password.equals(registerForm.matchingPassword))
             return "Fail";
@@ -27,7 +27,7 @@ public class UserService {
             return "Fail";
         if (registerForm.series.length() != 2)
             return "Fail";
-        if (!registerForm.semiGroup.equals("A") && !registerForm.semiGroup.equals("B"))
+        if (!registerForm.subGroup.equals("A") && !registerForm.subGroup.equals("B"))
             return "Fail";
         if (registerForm.year > 4)
             return "Fail";
