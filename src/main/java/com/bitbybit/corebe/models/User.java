@@ -13,8 +13,8 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(generator = "userGenerator")
-    @Column(name = "userid")
-    private Long userid;
+    @Column(name = "userId")
+    private Long userId;
 
     @Column(name = "username")
     private String username;
@@ -25,28 +25,28 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "serie")
-    private String serie;
+    @Column(name = "series")
+    private String series;
 
-    @Column(name = "grupa")
-    private String grupa;
+    @Column(name = "[group]")
+    private String group;
 
-    @Column(name = "semigrupa")
-    private String semigrupa;
+    @Column(name = "subGroup")
+    private String subGroup;
 
     @OneToOne
     @JoinColumn(name = "calendar")
     private Calendar calendar;
 
     public User(String username, String password, String name,
-                String serie, String grupa, String semigrupa,
+                String series, String group, String subGroup,
                 Calendar calendar) {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.semigrupa = semigrupa;
-        this.serie = serie;
-        this.grupa = grupa;
+        this.subGroup = subGroup;
+        this.series = series;
+        this.group = group;
         this.calendar = calendar;
     }
 

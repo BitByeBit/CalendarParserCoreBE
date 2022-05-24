@@ -13,15 +13,15 @@ import java.util.List;
 @Setter
 public class Calendar {
     @Id
-    @Column(name = "calendarid")
+    @Column(name = "calendarId")
     @GeneratedValue(generator = "calendarGenerator")
-    private Long calendarid;
+    private Long calendarId;
 
     @Column(name = "year")
     private String year;
 
-    @Column(name = "serie")
-    private String serie;
+    @Column(name = "series")
+    private String series;
 
     @Column(name = "semester")
     private String semester;
@@ -34,13 +34,17 @@ public class Calendar {
     @JoinColumn(name = "users")
     private User user;
 
-    public Calendar(String year, String serie, String semester,
+    public Calendar(String year, String series, String semester,
                     List<Event> events, User user) {
         this.year = year;
-        this.serie = serie;
+        this.series = series;
         this.semester = semester;
         this.events = events;
         this.user = user;
+    }
+
+    public void addEvent(Event event) {
+        this.events.add(event);
     }
 
     public Calendar() {}

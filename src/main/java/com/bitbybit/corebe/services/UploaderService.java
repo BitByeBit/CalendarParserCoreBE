@@ -24,21 +24,19 @@ public class UploaderService {
     @Autowired
     private CalendarService calendarService;
 
-    public CalendarDto uploadCalendar(User user, MultipartFile file) throws IOException {
+    public void uploadCalendar(User user, MultipartFile file) throws IOException {
         ParserDataDto parserDataDto = new ParserDataDto();
         parserDataDto.user = user;
         parserDataDto.file = file;
 
         if (file == null) {
-            return null;
+            return;
         }
 
         CalendarDto calendarDto = parserService.execParser(parserDataDto);
 
         user.setCalendar(calendarService.createCalendar(calendarDto));
         userService.save(user);
-
-        return calendarDto;
     }
 
 

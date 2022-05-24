@@ -6,7 +6,7 @@ public class RegisterDto {
     public String password;
     public String matchingPassword;
     public String group;
-    public String semiGroup;
+    public String subGroup;
     public String series;
     public Integer year;
     public Integer semester;

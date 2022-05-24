@@ -2,9 +2,13 @@ package com.bitbybit.corebe.dtos;
 
 import com.bitbybit.corebe.models.Calendar;
 import com.bitbybit.corebe.models.EventType;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class EventDto {
-    public Long id;
+    public Long eventId;
     public String name;
     public EventType type;
     public String timeslot;
@@ -14,5 +18,13 @@ public class EventDto {
 
     public String tag;
 
-    public Calendar calendar;
+    public EventDto(String name, EventType type, String timeslot, String weekday, Integer parity) {
+        this.name = name;
+        this.type = type;
+        this.timeslot = timeslot;
+        this.weekday = weekday;
+        this.parity = parity;
+    }
+
+    public EventDto() {}
 }
