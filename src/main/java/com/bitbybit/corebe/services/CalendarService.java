@@ -8,6 +8,7 @@ import com.bitbybit.corebe.repositories.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -25,10 +26,10 @@ public class CalendarService {
         Calendar calendar = new Calendar(calendarDto.year, calendarDto.series, calendarDto.semester,
                                         calendarDto.events, userService.getUser("username"));
 
-        calendarRepository.save(calendar);
+    calendarRepository.save(calendar);
 
         calendar.getEvents().forEach(event -> {
-            event.setCalendar(calendar);
+//            event.setCalendar(calendar);
             eventRepository.save(event);
         });
 

@@ -29,6 +29,10 @@ public class ParserService {
     // list of the merged cells in the sheet
     private static List<CellRangeAddress> mergedRegions;
 
+    // tags that identify each course
+    // > e.g. - SO
+    private static Set<String> tags;
+
     @Autowired
     private EventRepository eventRepository;
 
@@ -89,6 +93,46 @@ public class ParserService {
         return c;
     }
 
+    private String getTag(String courseName) {
+        int i, curr, j;
+
+        for (i = 0; i < courseName.length(); ++i) {
+            if (courseName.charAt(i) == '(') {
+                boolean ok = false;
+
+                for (var s : COURSE) {
+                    curr = i;
+
+                    for (j = 0; j < s.length() && curr < courseName.length(); ++j, ++curr) {
+                        if (s.charAt(j) != courseName.charAt(curr)) {
+                            break;
+                        }
+                    }
+
+                    if (j == s.length()) {
+                        ok = true;
+                        break;
+                    }
+                }
+
+                if (!ok) {
+                    // tag found
+                    StringBuilder tag = new StringBuilder();
+
+                    ++i;
+                    for (; courseName.charAt(i) != ')'; ++i) {
+                        tag.append(courseName.charAt(i));
+                    }
+
+                    tags.add(tag.toString());
+                    return tag.toString();
+                }
+            }
+        }
+
+        return null;
+    }
+
     /**
      * retrieve courses by day, time
      *
@@ -114,6 +158,10 @@ public class ParserService {
                             isCourse(cell.getStringCellValue())) {
 //                        Course c = getCourse(cell, i, t >>> 1);
                         Event c = getCourse(cell, i, t >>> 1);
+
+                        String tag = getTag(cell.getStringCellValue());
+                        c.setTag(tag);
+
                         courses.add(c);
                     }
                 }
@@ -123,6 +171,10 @@ public class ParserService {
                     if (cell.getCellType() == CellType.STRING &&
                             isCourse(cell.getStringCellValue())) {
                         Event c = getCourse(cell, i, t >>> 1);
+
+                        String tag = getTag(cell.getStringCellValue());
+                        c.setTag(tag);
+
                         courses.add(c);
                     }
                 }
@@ -151,6 +203,14 @@ public class ParserService {
         } else if (align == HorizontalAlignment.GENERAL ||
                 align == HorizontalAlignment.LEFT) {
             l.setParity(1);
+        }
+
+        String name = cell.getStringCellValue();
+        for (var tag : tags) {
+            if (name.contains(tag)) {
+                l.setTag(tag);
+                break;
+            }
         }
 
         return l;
@@ -340,6 +400,7 @@ public class ParserService {
          *     [2] - grupa -- nr
          *     [3] - semigrupa -- A/B
          */
+        tags = new HashSet<>();
         var userData = parserData.user;
         MultipartFile multipartFile = parserData.file;
 

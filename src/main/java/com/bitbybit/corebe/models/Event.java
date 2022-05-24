@@ -34,6 +34,9 @@ public class Event {
     @Column(name = "extra")
     private String extra = "";
 
+    @Column(name = "tag")
+    private String tag = "";
+
     @ManyToOne
     @JoinColumn(name = "calendar")
     private Calendar calendar;
