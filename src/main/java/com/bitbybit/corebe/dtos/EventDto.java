@@ -11,5 +11,8 @@ public class EventDto {
     public String weekday;
     public Integer parity;
     public String extra;
+
+    public String tag;
+
     public Calendar calendar;
 }
