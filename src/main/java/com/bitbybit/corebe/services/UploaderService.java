@@ -7,6 +7,7 @@ import com.bitbybit.corebe.models.Event;
 import com.bitbybit.corebe.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -19,25 +20,10 @@ public class UploaderService {
     private ParserService parserService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private CalendarService calendarService;
 
-    public void uploadCalendar(User user, MultipartFile file) throws IOException {
-        ParserDataDto parserDataDto = new ParserDataDto();
-        parserDataDto.user = user;
-        parserDataDto.file = file;
-
-        if (file == null) {
-            return;
-        }
-
+    public void uploadCalendar(ParserDataDto parserDataDto) throws IOException {
         CalendarDto calendarDto = parserService.execParser(parserDataDto);
-
-        user.setCalendar(calendarService.createCalendar(calendarDto));
-        userService.save(user);
+        calendarService.createCalendar(calendarDto);
     }
-
-
 }

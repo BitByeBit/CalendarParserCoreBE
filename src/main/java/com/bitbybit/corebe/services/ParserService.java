@@ -406,7 +406,6 @@ public class ParserService {
          *     [3] - semigrupa -- A/B
          */
         tags = new HashSet<>();
-        var userData = parserData.user;
         MultipartFile multipartFile = parserData.file;
 
         InputStream file = multipartFile.getInputStream();
@@ -479,9 +478,9 @@ public class ParserService {
 
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
-        String series = userData.getSeries();
-        String grupa = userData.getGroup();
-        String sgr = userData.getSubGroup();
+        String series = parserData.series;
+        String grupa = parserData.group;
+        String sgr = parserData.subGroup;
 
         String group = grupa + " " + series;
         String sgrEntry = group + " " + sgr;
@@ -499,7 +498,6 @@ public class ParserService {
             for (var time : hours0.keySet()) {
                 EventDto e = hours0.get(time);
                 events.add(e);
-//                this.eventRepository.save(e);
             }
 
             var hours1 = dSchedule.get(1);
@@ -508,7 +506,6 @@ public class ParserService {
                 EventDto e = hours1.get(time);
                 if (e.getParity() != 2) {
                     events.add(e);
-//                    this.eventRepository.save(e);
                 }
             }
         }
@@ -534,14 +531,13 @@ public class ParserService {
 
         CalendarDto calendarDto = new CalendarDto();
 
+        calendarDto.userUid = parserData.userUid;
         calendarDto.events = events;
         calendarDto.semester = semester;
         calendarDto.year = year;
         calendarDto.series = series;
 
         return calendarDto;
-
-//        mapper.writeValue(new File("eventList.json"), events);
     }
 }
 

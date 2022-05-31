@@ -12,14 +12,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CalendarService {
     @Autowired
     private CalendarRepository calendarRepository;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private EventRepository eventRepository;
@@ -34,7 +32,13 @@ public class CalendarService {
             return event;
         }).toList();
         Calendar calendar = new Calendar(calendarDto.year, calendarDto.series, calendarDto.semester,
-                                        events, userService.getUser("username"));
+                                        events, calendarDto.userUid);
+
+        Calendar userCalendar = getCalendar(calendarDto.userUid);
+
+        if (Objects.nonNull(userCalendar)) {
+            calendarRepository.delete(userCalendar);
+        }
 
         calendarRepository.save(calendar);
 
@@ -43,8 +47,8 @@ public class CalendarService {
         return calendar;
     }
 
-    public Calendar getCalendar(String username) {
-        return calendarRepository.getCalendarByUser(username);
+    public Calendar getCalendar(String userUid) {
+        return calendarRepository.getCalendarByUserUid(userUid);
     }
 
     public Calendar saveCalendar(Calendar calendar) {

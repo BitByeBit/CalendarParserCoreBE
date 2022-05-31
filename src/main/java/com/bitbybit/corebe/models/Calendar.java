@@ -2,6 +2,7 @@ package com.bitbybit.corebe.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
 
 import javax.persistence.*;
 import java.util.List;
@@ -26,21 +27,20 @@ public class Calendar {
     @Column(name = "semester")
     private String semester;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "events")
     private List<Event> events;
 
-    @OneToOne
-    @JoinColumn(name = "users")
-    private User user;
+    @Column(name = "userUid", unique = true)
+    private String userUid;
 
     public Calendar(String year, String series, String semester,
-                    List<Event> events, User user) {
+                    List<Event> events, String userUid) {
         this.year = year;
         this.series = series;
         this.semester = semester;
         this.events = events;
-        this.user = user;
+        this.userUid = userUid;
     }
 
     public void addEvent(Event event) {
