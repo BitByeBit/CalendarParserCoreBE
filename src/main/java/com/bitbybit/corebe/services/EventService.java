@@ -8,6 +8,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
+import java.rmi.AccessException;
 import java.util.Objects;
 
 @Service
@@ -25,26 +27,38 @@ public class EventService {
         return this.eventRepository.save(event);
     }
 
-    public Event addEvent(EventDto eventDto) {
+    public Event addEvent(EventDto eventDto, String userUid) {
         Event event = new Event(eventDto.name, eventDto.type, eventDto.timeslot, eventDto.weekday,
                 eventDto.parity);
         event.setExtra(Objects.requireNonNullElse(eventDto.extra, ""));
         event = this.save(event);
-        Calendar calendar = this.calendarService.getCalendar("username");
+
+        Calendar calendar = this.calendarService.getCalendar(userUid);
         calendar.addEvent(event);
         calendarService.saveCalendar(calendar);
         return event;
     }
 
-    public Event editEvent(EventDto eventDto) {
+    public Event editEvent(EventDto eventDto, String userUid) throws AccessDeniedException {
+        Calendar calendar = this.calendarService.getCalendar(userUid);
         Event event = this.eventRepository.getById(eventDto.eventId);
+
+        if (!calendar.getEvents().contains(event)) {
+            throw new AccessDeniedException("You do not have access to this event!");
+        }
+
         modelMapper.map(eventDto, event);
         return eventRepository.save(event);
     }
 
-    public void deleteEvent(Long eventId) {
+    public void deleteEvent(Long eventId, String userUid) throws AccessDeniedException {
+        Calendar calendar = this.calendarService.getCalendar(userUid);
         Event event = this.eventRepository.getById(eventId);
+
+        if (!calendar.getEvents().contains(event)) {
+            throw new AccessDeniedException("You do not have access to this event!");
+        }
+
         this.eventRepository.delete(event);
     }
-
 }
