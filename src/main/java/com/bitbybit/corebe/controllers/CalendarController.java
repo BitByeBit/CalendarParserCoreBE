@@ -2,6 +2,7 @@ package com.bitbybit.corebe.controllers;
 
 import com.bitbybit.corebe.dtos.CalendarDto;
 import com.bitbybit.corebe.dtos.EventDto;
+import com.bitbybit.corebe.dtos.EventShareDto;
 import com.bitbybit.corebe.models.Calendar;
 import com.bitbybit.corebe.models.Event;
 import com.bitbybit.corebe.services.CalendarService;
@@ -58,5 +59,10 @@ public class CalendarController {
         CalendarDto calendarDto = mapper.map(calendar, CalendarDto.class);
         calendarDto.events = calendarDto.events.stream().filter(eventDto -> eventDto.tag.equals(tag)).toList();
         return calendarDto;
+    }
+
+    @PostMapping("/shareEvent")
+    public void shareEvent(@RequestBody EventShareDto eventShareDto) throws AccessDeniedException {
+        calendarService.shareEvent(eventShareDto.srcUid, eventShareDto.dstUid, eventShareDto.eventId);
     }
 }

@@ -46,5 +46,15 @@ public class Event {
         this.parity = parity;
     }
 
+    public Event(String name, EventType type, String timeslot,
+                 String weekday, Integer parity, String extra) {
+        this.name = name;
+        this.type = type;
+        this.timeslot = timeslot;
+        this.weekday = weekday;
+        this.parity = parity;
+        this.extra = extra;
+    }
+
     public Event() {}
 }

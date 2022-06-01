@@ -43,8 +43,6 @@ public class UploaderController {
 
         parserDataDto.userUid = userUid;
 
-
-
         uploaderService.uploadCalendar(parserDataDto);
         return modelMapper.map(calendarService.getCalendar(userUid), CalendarDto.class);
     }
