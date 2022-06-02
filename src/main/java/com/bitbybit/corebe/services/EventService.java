@@ -29,8 +29,9 @@ public class EventService {
 
     public Event addEvent(EventDto eventDto, String userUid) {
         Event event = new Event(eventDto.name, eventDto.type, eventDto.timeslot, eventDto.weekday,
-                eventDto.parity);
+                eventDto.parity, eventDto.extra, eventDto.tag);
         event.setExtra(Objects.requireNonNullElse(eventDto.extra, ""));
+        event.setExtra(Objects.requireNonNullElse(eventDto.tag, ""));
         event = this.save(event);
 
         Calendar calendar = this.calendarService.getCalendar(userUid);

@@ -38,15 +38,6 @@ public class Event {
     private String tag = "";
 
     public Event(String name, EventType type, String timeslot,
-                 String weekday, Integer parity) {
-        this.name = name;
-        this.type = type;
-        this.timeslot = timeslot;
-        this.weekday = weekday;
-        this.parity = parity;
-    }
-
-    public Event(String name, EventType type, String timeslot,
                  String weekday, Integer parity, String extra) {
         this.name = name;
         this.type = type;
@@ -54,6 +45,17 @@ public class Event {
         this.weekday = weekday;
         this.parity = parity;
         this.extra = extra;
+    }
+
+    public Event(String name, EventType type, String timeslot,
+                 String weekday, Integer parity, String extra, String tag) {
+        this.name = name;
+        this.type = type;
+        this.timeslot = timeslot;
+        this.weekday = weekday;
+        this.parity = parity;
+        this.extra = extra;
+        this.tag = tag;
     }
 
     public Event() {}
