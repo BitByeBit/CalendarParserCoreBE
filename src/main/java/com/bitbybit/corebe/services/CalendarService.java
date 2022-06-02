@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -49,6 +50,29 @@ public class CalendarService {
 
     public Calendar getCalendar(String userUid) {
         return calendarRepository.getCalendarByUserUid(userUid);
+    }
+
+    public void shareEvent(String srcUid, String dstUid, Long eventId) throws AccessDeniedException {
+        Calendar srcCalendar = getCalendar(srcUid);
+
+        Event srcEvent = srcCalendar.getEvents().stream()
+                        .filter(event -> Objects.equals(event.getEventId(), eventId)).findFirst().orElse(null);
+
+        if (Objects.isNull(srcEvent)) {
+            throw new AccessDeniedException("You do not have access to this event!");
+        }
+
+        Calendar dstCalendar = getCalendar(dstUid);
+
+        if (Objects.isNull(dstCalendar)) {
+            throw new AccessDeniedException("User does not exist");
+        }
+
+        dstCalendar.addEvent(eventRepository.save(new Event(srcEvent.getName(),
+                srcEvent.getType(), srcEvent.getTimeslot(), srcEvent.getWeekday(),
+                srcEvent.getParity(), srcEvent.getExtra())));
+
+        calendarRepository.save(dstCalendar);
     }
 
     public Calendar saveCalendar(Calendar calendar) {

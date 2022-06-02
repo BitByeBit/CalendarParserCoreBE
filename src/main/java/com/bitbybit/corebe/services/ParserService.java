@@ -161,7 +161,6 @@ public class ParserService {
                 for (Cell cell : row) {
                     if (cell.getCellType() == CellType.STRING &&
                             isCourse(cell.getStringCellValue())) {
-//                        Course c = getCourse(cell, i, t >>> 1);
                         EventDto c = getCourse(cell, i, t >>> 1);
 
                         String tag = getTag(cell.getStringCellValue());
@@ -409,9 +408,6 @@ public class ParserService {
         MultipartFile multipartFile = parserData.file;
 
         InputStream file = multipartFile.getInputStream();
-
-//        String fName = "TODO";
-//        FileInputStream file = new FileInputStream(new File(fName));
 
         // create Workbook instance holding reference to .xls file
         HSSFWorkbook workbook = new HSSFWorkbook(file);
