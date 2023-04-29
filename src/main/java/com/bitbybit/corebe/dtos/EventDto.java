@@ -1,6 +1,5 @@
 package com.bitbybit.corebe.dtos;
 
-import com.bitbybit.corebe.models.Calendar;
 import com.bitbybit.corebe.models.EventType;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,6 @@
-<<<<<<< HEAD
+# ENV files
+.env
+
 # Compiled class file
 *.class
 
@@ -60,4 +62,3 @@ build/
 ### Extra ###
 mvnw
 mvnw.cmd
->>>>>>> 0b20b43 (BIT-11 adds initial project structure)

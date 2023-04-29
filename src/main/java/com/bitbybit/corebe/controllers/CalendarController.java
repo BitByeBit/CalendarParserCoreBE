@@ -8,7 +8,6 @@ import com.bitbybit.corebe.models.Event;
 import com.bitbybit.corebe.services.CalendarService;
 import com.bitbybit.corebe.services.EventService;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,23 +27,20 @@ public class CalendarController {
     @GetMapping("/getCalendar")
     public CalendarDto getCalendar(@RequestParam("user_uid") String userUid) {
         Calendar calendar = calendarService.getCalendar(userUid);
-        CalendarDto calendarDto = mapper.map(calendar, CalendarDto.class);
-        return calendarDto;
+        return mapper.map(calendar, CalendarDto.class);
     }
 
     @PostMapping("/addEvent")
     public EventDto addEvent(@RequestParam("user_uid") String userUid, @RequestBody EventDto eventDto) {
         Event event = this.eventService.addEvent(eventDto, userUid);
-        EventDto returnDto = mapper.map(event, EventDto.class);
-        return returnDto;
+        return mapper.map(event, EventDto.class);
     }
 
     @PostMapping("/editEvent")
     public EventDto editEvent(@RequestParam("user_uid") String userUid,
                               @RequestBody EventDto eventDto) throws AccessDeniedException {
         Event event = eventService.editEvent(eventDto, userUid);
-        EventDto returnDto = mapper.map(event, EventDto.class);
-        return returnDto;
+        return mapper.map(event, EventDto.class);
     }
 
     @DeleteMapping("/deleteEvent")

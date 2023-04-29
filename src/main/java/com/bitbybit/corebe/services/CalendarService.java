@@ -7,11 +7,9 @@ import com.bitbybit.corebe.repositories.CalendarRepository;
 import com.bitbybit.corebe.repositories.EventRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,7 +24,7 @@ public class CalendarService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public Calendar createCalendar(CalendarDto calendarDto) {
+    public void createCalendar(CalendarDto calendarDto) {
         List<Event> events = calendarDto.events.stream().map(eventDto -> {
             Event event = modelMapper.map(eventDto, Event.class);
             eventRepository.save(event);
@@ -45,7 +43,6 @@ public class CalendarService {
 
         eventRepository.saveAll(calendar.getEvents());
 
-        return calendar;
     }
 
     public Calendar getCalendar(String userUid) {
@@ -75,7 +72,7 @@ public class CalendarService {
         calendarRepository.save(dstCalendar);
     }
 
-    public Calendar saveCalendar(Calendar calendar) {
-        return this.calendarRepository.save(calendar);
+    public void saveCalendar(Calendar calendar) {
+        this.calendarRepository.save(calendar);
     }
 }

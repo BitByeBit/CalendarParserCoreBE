@@ -1,7 +1,6 @@
 package com.bitbybit.corebe.controllers;
 
 import com.bitbybit.corebe.dtos.CalendarDto;
-import com.bitbybit.corebe.dtos.ParserDataDto;
 import com.bitbybit.corebe.services.CalendarService;
 import com.bitbybit.corebe.services.UploaderService;
 import org.modelmapper.ModelMapper;
@@ -35,15 +34,7 @@ public class UploaderController {
             throw new NullPointerException();
         }
 
-        ParserDataDto parserDataDto = new ParserDataDto();
-        parserDataDto.series = series;
-        parserDataDto.group = group;
-        parserDataDto.subGroup = subGroup;
-        parserDataDto.file = file;
-
-        parserDataDto.userUid = userUid;
-
-        uploaderService.uploadCalendar(parserDataDto);
+        uploaderService.uploadCalendar(userUid, series, group, subGroup, file);
         return modelMapper.map(calendarService.getCalendar(userUid), CalendarDto.class);
     }
 }
