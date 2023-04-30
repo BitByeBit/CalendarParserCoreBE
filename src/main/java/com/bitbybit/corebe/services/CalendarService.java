@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Objects;
+import io.prometheus.client.Gauge;
 
 @Service
 public class CalendarService {
@@ -24,7 +25,11 @@ public class CalendarService {
     @Autowired
     private ModelMapper modelMapper;
 
+    static final Gauge calendars = Gauge.build()
+     .name("calendars_created").help("calendars_created").register();
+
     public void createCalendar(CalendarDto calendarDto) {
+        
         List<Event> events = calendarDto.events.stream().map(eventDto -> {
             Event event = modelMapper.map(eventDto, Event.class);
             eventRepository.save(event);
@@ -43,6 +48,7 @@ public class CalendarService {
 
         eventRepository.saveAll(calendar.getEvents());
 
+        calendars.inc();
     }
 
     public Calendar getCalendar(String userUid) {
