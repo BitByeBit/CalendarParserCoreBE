@@ -87,8 +87,9 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
     </dependencies>
-
+    <packaging>jar</packaging>
     <build>
+        <finalName>calendar-parser-core-be</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
