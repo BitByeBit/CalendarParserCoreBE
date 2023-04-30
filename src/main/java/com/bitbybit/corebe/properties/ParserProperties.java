@@ -1,4 +1,4 @@
-package com.bitbybit.corebe.utils;
+package com.bitbybit.corebe.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

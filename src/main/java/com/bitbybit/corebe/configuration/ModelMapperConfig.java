@@ -1,4 +1,4 @@
-package com.bitbybit.corebe.utils;
+package com.bitbybit.corebe.configuration;
 
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
