@@ -50,6 +50,3 @@ jobs:
           tags: |
             ghcr.io/${{ steps.string.outputs.lowercase }}/${{ env.IMAGE_NAME }}:latest
             ghcr.io/${{ steps.string.outputs.lowercase }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
-
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}

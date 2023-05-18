@@ -1,6 +1,6 @@
 FROM eclipse-temurin:17-focal
 
-LABEL org.opencontainers.image.source=https://github.com/BitByeBit/CalendarParserCoreBE
+LABEL org.opencontainers.image.source=https://github.com/bitbyebit/calendarparsercorebe
 
 ENV SPRING_PORT=8081
 
