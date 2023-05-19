@@ -42,3 +42,4 @@ jobs:
           tags: |
             ghcr.io/bitbyebit/calendar-parser-core-be:latest
             ghcr.io/bitbyebit/calendar-parser-core-be:${{ github.ref_name }}
+          push: true
