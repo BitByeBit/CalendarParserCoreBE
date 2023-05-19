@@ -39,7 +39,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./
+          platforms: linux/amd64,linux/arm64
+          push: true
           tags: |
             ghcr.io/bitbyebit/calendar-parser-core-be:latest
             ghcr.io/bitbyebit/calendar-parser-core-be:${{ github.ref_name }}
-          push: true
