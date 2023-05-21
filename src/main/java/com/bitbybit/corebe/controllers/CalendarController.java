@@ -30,7 +30,7 @@ public class CalendarController {
     @Autowired
     private ModelMapper mapper;
 
-    @GetMapping("/getCalendar")
+    @GetMapping("/calendar")
     public ResponseEntity<CalendarDto> getCalendar(@RequestHeader("Authorization") String userToken,
                                                    @RequestParam("user_uid") String userUid) {
         if (userUid == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -40,7 +40,7 @@ public class CalendarController {
         return ResponseEntity.ok(mapper.map(calendar, CalendarDto.class));
     }
 
-    @PostMapping("/addEvent")
+    @PostMapping("/add-event")
     public ResponseEntity<EventDto> addEvent(@RequestHeader("Authorization") String userToken,
                                              @RequestParam("user_uid") String userUid, @RequestBody EventDto eventDto) {
         if (userUid == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -50,7 +50,7 @@ public class CalendarController {
         return ResponseEntity.ok(mapper.map(event, EventDto.class));
     }
 
-    @PostMapping("/editEvent")
+    @PostMapping("/edit-event")
     public ResponseEntity<EventDto> editEvent(@RequestHeader("Authorization") String userToken,
                                               @RequestParam("user_uid") String userUid,
                                               @RequestBody EventDto eventDto) throws AccessDeniedException {
@@ -61,7 +61,7 @@ public class CalendarController {
         return ResponseEntity.ok(mapper.map(event, EventDto.class));
     }
 
-    @DeleteMapping("/deleteEvent")
+    @DeleteMapping("/delete-event")
     public ResponseEntity<?> deleteEvent(@RequestHeader("Authorization") String userToken, @RequestParam("user_uid") String userUid,
                             @RequestBody Long eventId) throws AccessDeniedException {
         if (userUid == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -71,9 +71,9 @@ public class CalendarController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/filterCalendar")
-    public ResponseEntity<CalendarDto> filterEvents(@RequestHeader("Authorization") String userToken,
-                                    @RequestParam("user_uid") String userUid, @RequestParam("tag") String tag) {
+    @GetMapping("/filter-calendar")
+    public ResponseEntity<CalendarDto> filterCalendar(@RequestHeader("Authorization") String userToken,
+                                                      @RequestParam("user_uid") String userUid, @RequestParam("tag") String tag) {
         if (userUid == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         if (userToken == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         if (authService.isInvalidUser(userUid, userToken)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -83,7 +83,7 @@ public class CalendarController {
         return ResponseEntity.ok(calendarDto);
     }
 
-    @PostMapping("/shareEvent")
+    @PostMapping("/share-event")
     public ResponseEntity<?> shareEvent(@RequestHeader("Authorization") String userToken,
                            @RequestBody EventShareDto eventShareDto) throws AccessDeniedException {
         if (eventShareDto == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

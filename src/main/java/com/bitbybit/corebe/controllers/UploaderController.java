@@ -27,7 +27,7 @@ public class UploaderController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @PostMapping("/uploadCalendar")
+    @PostMapping("/upload")
     public ResponseEntity<CalendarDto> upload(@RequestHeader("Authorization") String userToken,
                                              @RequestParam("user_uid") String userUid,
                                              @RequestParam("series") String series,
