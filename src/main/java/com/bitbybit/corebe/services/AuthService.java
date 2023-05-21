@@ -1,10 +1,11 @@
 package com.bitbybit.corebe.services;
 
+import io.prometheus.client.Counter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import io.prometheus.client.Counter;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Service
 public class AuthService {
@@ -21,12 +22,17 @@ public class AuthService {
     public String validateToken(String token) {
         requests.inc();
         WebClient webClient = WebClient.create(authenticatorUrl);
-        return webClient.post()
-                .uri("/validate")
-                .contentType(MediaType.TEXT_PLAIN)
-                .bodyValue(token)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        try {
+            return webClient.post()
+                    .uri("/validate")
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .bodyValue(token)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (WebClientResponseException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }
