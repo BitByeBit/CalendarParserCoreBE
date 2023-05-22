@@ -31,13 +31,13 @@ public class CalendarController {
     @Autowired
     private ModelMapper mapper;
 
-    static final Counter requests = Counter.build().name("Total request").help("Total requests").register();
-    static final Counter calendarRequests = Counter.build().name("Calendar request").help("Calendar requests").register();
-    static final Counter addEventRequests = Counter.build().name("Add event request").help("Add event requests").register();
-    static final Counter editEventRequests = Counter.build().name("Edit event request").help("Edit event requests").register();
-    static final Counter deleteEventRequests = Counter.build().name("delete event request").help("Delete event requests").register();
-    static final Counter filterCalendarRequests = Counter.build().name("Filter calendar request").help("Filter Calendar requests").register();
-    static final Counter shareEventRequests = Counter.build().name("Share event request").help("Share event requests").register();
+    static final Counter requests = Counter.build().name("total_requests").help("Total requests").register();
+    static final Counter calendarRequests = Counter.build().name("calendar_requests").help("Calendar requests").register();
+    static final Counter addEventRequests = Counter.build().name("add_event_requests").help("Add event requests").register();
+    static final Counter editEventRequests = Counter.build().name("edit_event_requests").help("Edit event requests").register();
+    static final Counter deleteEventRequests = Counter.build().name("delete_event_requests").help("Delete event requests").register();
+    static final Counter filterCalendarRequests = Counter.build().name("filter_calendar_requests").help("Filter Calendar requests").register();
+    static final Counter shareEventRequests = Counter.build().name("share_event_requests").help("Share event requests").register();
 
 
     @GetMapping("/calendar")
